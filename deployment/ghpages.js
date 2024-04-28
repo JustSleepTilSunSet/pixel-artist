@@ -1,3 +1,6 @@
+const path = require('path');
+const ghpages = require('gh-pages');
+
 const options = {
     branch: 'gh-pages',
     repo: require(`${__dirname}/ghpage_config.json`).REPO // Here is your repo.
