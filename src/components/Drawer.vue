@@ -3,6 +3,9 @@
     <canvas id="canvas" @mousedown="toDrawMode()" @mousemove="toDraw($event)" @mouseup="toCancelDraw()">
       An alternative text describing what your canvas displays.
     </canvas>
+    <button id="btn1" @click="toDownloadPainting()">
+      download
+    </button>
   </div>
 </template>
 
@@ -22,6 +25,11 @@ import { ref } from 'vue';
   mounted() {
     const canvas = document!.querySelector("canvas");
     const ctx = canvas!.getContext("2d");
+    // Set b.g. color.
+    ctx!.fillStyle = "#FFFFFF";
+    ctx!.fillRect(0, 0, canvas!.width, canvas!.height);
+
+    // Draw grid.
     ctx!.beginPath();
     for (let xOffset = 20; xOffset < canvas!.width; xOffset += 20) {
       ctx!.moveTo(xOffset, 0);
@@ -37,7 +45,8 @@ import { ref } from 'vue';
     toDrawMode: function () {
       this.drag = true;
     },
-    toDraw: function (event:any) {
+
+    toDraw: function (event: any) {
       const canvas = document!.querySelector("canvas");
       const ctx = canvas!.getContext("2d");
       var dragEnd: any;
@@ -47,12 +56,26 @@ import { ref } from 'vue';
           x: event.clientX - rect!.left,
           y: event.clientY - rect!.top
         }
-        ctx!.fillStyle = "black";
+        // TODO: to ambiguous coordinate.
+        ctx!.fillStyle = "green";
         ctx!.fillRect(dragEnd.x, dragEnd.y, 5, 5);
       }
     },
-    toCancelDraw: function(){
+
+    toCancelDraw: function () {
       this.drag = false;
+    },
+
+    toDownloadPainting: function () {
+      const canvas = document!.querySelector("canvas");
+      var a = document.createElement("a");
+      a.href = "data:image/png;base64," + canvas?.toDataURL("image/jpeg").split(';base64,')[1]; //Image Base64 Goes here
+      a.download = "Image.jpg";
+      a.click();
+
+      // TODO:submit the base64 buffer to backend.
+      // console.log(canvas?.toDataURL("image/jpeg").split(';base64,')[1]);
+      // canvas?.toDataURL("image/jpeg")
     }
   }
 })
