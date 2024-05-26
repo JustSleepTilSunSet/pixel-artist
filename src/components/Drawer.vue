@@ -6,11 +6,15 @@
     <button id="btn1" @click="toDownloadPainting()">
       download
     </button>
+    <button id="btn1" @click="toUploadPainting()">
+      upload
+    </button>
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
+import pixelServerCli from '@/services/pixelServerCli';
 import { ref } from 'vue';
 
 @Options({
@@ -68,14 +72,17 @@ import { ref } from 'vue';
 
     toDownloadPainting: function () {
       const canvas = document!.querySelector("canvas");
+      const image = canvas?.toDataURL("image/jpeg") as string; // the variable is a base64 string.
       var a = document.createElement("a");
-      a.href = "data:image/png;base64," + canvas?.toDataURL("image/jpeg").split(';base64,')[1]; //Image Base64 Goes here
+      a.href = "data:image/png;base64," + image.split(';base64,')[1]; //Image Base64 Goes here
       a.download = "Image.jpg";
       a.click();
-
-      // TODO:submit the base64 buffer to backend.
-      // console.log(canvas?.toDataURL("image/jpeg").split(';base64,')[1]);
-      // canvas?.toDataURL("image/jpeg")
+    },
+    toUploadPainting: async function () {
+      const canvas = document!.querySelector("canvas");
+      const image = canvas?.toDataURL("image/jpeg") as string; // the variable is a base64 string.
+      var a = document.createElement("a");
+      await pixelServerCli.saveImage(image);
     }
   }
 })
