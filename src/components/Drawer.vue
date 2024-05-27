@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import pixelServerCli from '@/services/pixelServerCli';
+// import pixelServerCli from '@/services/pixelServerCli';
 import { ref } from 'vue';
 
 interface Square {
@@ -82,7 +82,7 @@ interface Square {
       const canvas = document!.querySelector("canvas");
       const image = canvas?.toDataURL("image/jpeg") as string; // the variable is a base64 string.
       var a = document.createElement("a");
-      await pixelServerCli.saveImage(image);
+      // await pixelServerCli.saveImage(image);
     }
   }
 })
