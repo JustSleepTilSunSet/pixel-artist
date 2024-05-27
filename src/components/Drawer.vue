@@ -1,9 +1,9 @@
 <template>
   <div>
-    <canvas id="canvas" @mousedown="toDrawMode()" @mousemove="toDraw($event)" @mouseup="toCancelDraw()">
+    <canvas ref="canvas" width="300" height="300" @mousedown="toDrawMode" @mousemove="toDraw" @mouseup="toCancelDraw">
       An alternative text describing what your canvas displays.
     </canvas>
-    <button id="btn1" @click="toDownloadPainting()">
+    <button id="btn1" @click="toDownloadPainting">
       download
     </button>
     <button id="btn1" @click="toUploadPainting()">
@@ -17,64 +17,64 @@ import { Options, Vue } from 'vue-class-component';
 import pixelServerCli from '@/services/pixelServerCli';
 import { ref } from 'vue';
 
+interface Square {
+  selected: boolean;
+}
+
 @Options({
-  props: {
-  },
   data() {
-    const drag = ref(false);
     return {
-      drag
-    }
+      drag: false,
+      squares: Array.from({ length: 30 }, () =>
+        Array.from({ length: 30 }, () => ({ selected: false } as Square))
+      )
+    };
   },
   mounted() {
-    const canvas = document!.querySelector("canvas");
-    const ctx = canvas!.getContext("2d");
-    // Set b.g. color.
-    ctx!.fillStyle = "#FFFFFF";
-    ctx!.fillRect(0, 0, canvas!.width, canvas!.height);
-
-    // Draw grid.
-    ctx!.beginPath();
-    for (let xOffset = 20; xOffset < canvas!.width; xOffset += 20) {
-      ctx!.moveTo(xOffset, 0);
-      ctx!.lineTo(xOffset, canvas!.height);
-    }
-    for (let yOffset = 20; yOffset < canvas!.height; yOffset += 20) {
-      ctx!.moveTo(0, yOffset);
-      ctx!.lineTo(canvas!.width, yOffset);
-    }
-    ctx!.stroke(); // Render the path
+    this.draw();
   },
   methods: {
-    toDrawMode: function () {
-      this.drag = true;
-    },
+    draw() {
+      const canvas = this.$refs.canvas as HTMLCanvasElement;
+      const context = canvas.getContext('2d');
 
-    toDraw: function (event: any) {
-      const canvas = document!.querySelector("canvas");
-      const ctx = canvas!.getContext("2d");
-      var dragEnd: any;
-      if (this.drag) {
-        let rect = canvas!.getBoundingClientRect();
-        dragEnd = {
-          x: event.clientX - rect!.left,
-          y: event.clientY - rect!.top
-        }
-        // TODO: to ambiguous coordinate.
-        ctx!.fillStyle = "green";
-        ctx!.fillRect(dragEnd.x, dragEnd.y, 5, 5);
+      if (context) {
+        // 設置背景顏色
+        context.fillStyle = 'black';
+        context.fillRect(0, 0, 300, 300);
+
+        // 繪製方格
+        this.squares.forEach((line: Square[], i: number) => {
+          line.forEach((square: Square, j: number) => {
+            context.fillStyle = square.selected ? 'red' : 'white';
+            context.fillRect(10 * j + 1, 10 * i + 1, 9, 9);
+          });
+        });
       }
     },
+    toDrawMode() {
+      this.drag = true;
+    },
+    toDraw(event: MouseEvent) {
+      if (!this.drag) return;
 
-    toCancelDraw: function () {
+      const canvas = this.$refs.canvas as HTMLCanvasElement;
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor((event.clientX - rect.left) / 10);
+      const y = Math.floor((event.clientY - rect.top) / 10);
+
+      if (x >= 0 && x < 30 && y >= 0 && y < 30) {
+        this.squares[y][x].selected = true;
+        this.draw();
+      }
+    },
+    toCancelDraw() {
       this.drag = false;
     },
-
-    toDownloadPainting: function () {
-      const canvas = document!.querySelector("canvas");
-      const image = canvas?.toDataURL("image/jpeg") as string; // the variable is a base64 string.
-      var a = document.createElement("a");
-      a.href = "data:image/png;base64," + image.split(';base64,')[1]; //Image Base64 Goes here
+    toDownloadPainting() {
+      const canvas = this.$refs.canvas as HTMLCanvasElement;
+      const a = document.createElement("a");
+      a.href = canvas.toDataURL("image/jpeg");
       a.download = "Image.jpg";
       a.click();
     },
@@ -87,14 +87,14 @@ import { ref } from 'vue';
   }
 })
 export default class Drawer extends Vue {
+  declare $refs: {
+    canvas: HTMLCanvasElement;
+  };
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 canvas {
-  border: 1px solid;
-  width: 120;
-  height: 120;
+  border: 1px solid black;
 }
 </style>
