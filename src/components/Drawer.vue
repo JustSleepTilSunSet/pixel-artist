@@ -6,7 +6,7 @@
     <button id="btn1" @click="toDownloadPainting">
       download
     </button>
-    <button id="btn1" @click="toUploadPainting()">
+    <button id="btn1" @click="toUploadPainting">
       upload
     </button>
   </div>
@@ -14,12 +14,13 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-// import pixelServerCli from '@/services/pixelServerCli';
-import { ref } from 'vue';
+import pixelServerCli from '@/services/pixelServerCli';
+// import { ref } from 'vue';
 
 interface Square {
   selected: boolean;
 }
+
 
 @Options({
   data() {
@@ -82,7 +83,10 @@ interface Square {
       const canvas = document!.querySelector("canvas");
       const image = canvas?.toDataURL("image/jpeg") as string; // the variable is a base64 string.
       var a = document.createElement("a");
-      // await pixelServerCli.saveImage(image);
+      let response = await pixelServerCli.saveImage(image);
+      if(response.status ===0){
+        alert("上傳成功");
+      }
     }
   }
 })
