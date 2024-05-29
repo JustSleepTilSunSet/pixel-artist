@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkpixel_artist"]=self["webpackChunkpixel_artist"]||[]).push([[594],{5419:function(t,n,r){r.r(n),r.d(n,{default:function(){return o}});var e=r(6768);const u={class:"about"},s=(0,e.Lk)("h1",null,"Others",-1),a=[s];function c(t,n){return(0,e.uX)(),(0,e.CE)("div",u,a)}var i=r(1241);const l={},f=(0,i.A)(l,[["render",c]]);var o=f}}]);
+//# sourceMappingURL=about.dec1ca95.js.map
