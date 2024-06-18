@@ -1,9 +1,15 @@
 <template>
   <nav>
-    <router-link to="/draw">Draw</router-link> |
-    <router-link to="/about">About</router-link>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-white p-3 text-center">
+          <router-link to="/draw">Draw</router-link> |
+          <router-link to="/about">About</router-link>
+        </div>
+      </div>
+    </div>
+    <router-view />
   </nav>
-  <router-view/>
 </template>
 
 <style>

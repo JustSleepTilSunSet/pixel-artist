@@ -1,14 +1,25 @@
 <template>
   <div>
-    <canvas ref="canvas" width="300" height="300" @mousedown="toDrawMode" @mousemove="toDraw" @mouseup="toCancelDraw">
-      An alternative text describing what your canvas displays.
-    </canvas>
-    <button id="btn1" @click="toDownloadPainting">
-      download
-    </button>
-    <button id="btn1" @click="toUploadPainting">
-      upload
-    </button>
+    <div class="row my-3">
+      <div class="col-12 bg-light p-5 text-center">
+        <canvas ref="canvas" width="720" height="360" @mousedown="toDrawMode" @mousemove="toDraw"
+          @mouseup="toCancelDraw">
+        </canvas>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-6 text-center">
+        <button id="btn1" @click="toDownloadPainting">
+          download
+        </button>
+      </div>
+      <div class="col-6 text-center">
+
+        <button color="primary" id="btn2" @click="toUploadPainting">
+          upload
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -26,8 +37,8 @@ interface Square {
   data() {
     return {
       drag: false,
-      squares: Array.from({ length: 30 }, () =>
-        Array.from({ length: 30 }, () => ({ selected: false } as Square))
+      squares: Array.from({ length: 90 }, () =>
+        Array.from({ length: 90 }, () => ({ selected: false } as Square))
       )
     };
   },
@@ -42,7 +53,7 @@ interface Square {
       if (context) {
         // 設置背景顏色
         context.fillStyle = 'black';
-        context.fillRect(0, 0, 300, 300);
+        context.fillRect(0, 0, 900, 900);
 
         // 繪製方格
         this.squares.forEach((line: Square[], i: number) => {
@@ -64,7 +75,7 @@ interface Square {
       const x = Math.floor((event.clientX - rect.left) / 10);
       const y = Math.floor((event.clientY - rect.top) / 10);
 
-      if (x >= 0 && x < 30 && y >= 0 && y < 30) {
+      if (x >= 0 && x < 90 && y >= 0 && y < 90) {
         this.squares[y][x].selected = true;
         this.draw();
       }
@@ -84,7 +95,7 @@ interface Square {
       const image = canvas?.toDataURL("image/jpeg") as string; // the variable is a base64 string.
       var a = document.createElement("a");
       let response = await pixelServerCli.saveImage(image);
-      if(response.status ===0){
+      if (response.status === 0) {
         alert("上傳成功");
       }
     }
