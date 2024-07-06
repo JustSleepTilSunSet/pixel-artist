@@ -21,7 +21,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="hello">Login</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="loginByGuest">LoginByGuest</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="login">Login</button>
           </div>
         </div>
       </div>
@@ -43,8 +44,12 @@
 <script lang="ts" setup>
 import pixelServerCli from '@/services/pixelServerCli';
 
-function login(){
-  console.log('hello');
+async function login(){
+  await pixelServerCli.login();
+}
+
+async function loginByGuest(){
+  await pixelServerCli.loginByGuest();
 }
 </script>
 
