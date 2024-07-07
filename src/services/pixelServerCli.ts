@@ -23,10 +23,10 @@ export default {
                 };
             });
     },
-    async login() {
+    async login(account: string, password: string) {
         const data = {
-            "account": process.env.VUE_APP_TEST_ACCOUNT,
-            "pwd": process.env.VUE_APP_TEST_PWD
+            "account": account,
+            "pwd": password
         };
 
         return await axios.post(LOGIN_URL, data)
