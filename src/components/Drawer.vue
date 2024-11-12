@@ -89,14 +89,21 @@ interface Square {
       a.click();
     },
     toUploadPainting: async function () {
-      const canvas = document!.querySelector("canvas");
-      const image = canvas?.toDataURL("image/jpeg") as string; // the variable is a base64 string.
-      var a = document.createElement("a");
-      let response = await pixelServerCli.saveImage(image);
-      if (response.status === 0) {
-        alert("上傳成功");
-      }
+      // NOTICE: Please instead v-model.
+      const canvas = document!.querySelector("canvas");      
+      await canvas?.toBlob(async (blob)=>{
+          await pixelServerCli.uploadPainting(blob);
+      });
     }
+    // base64 to blob.
+    // base64ToArrayBuffer: function (base64: string) {
+    //   let binaryString = atob(base64);
+    //   let bytes = new Uint8Array(binaryString.length);
+    //   for (let i = 0; i < binaryString.length; i++) {
+    //       bytes[i] = binaryString.charCodeAt(i);
+    //   }
+    //   return bytes.buffer;
+    // }
   }
 })
 export default class Drawer extends Vue {

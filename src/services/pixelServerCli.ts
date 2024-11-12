@@ -5,23 +5,15 @@ const LOGIN_BY_GUEST_URL  = process.env.VUE_APP_LOGIN_BY_GUEST_URL;
 
 
 export default {
-    async saveImage(image: String) {
-        const data = {
-            image: image
-        };
-
-        return await axios.post(uploadImageUrl, data)
-            .then(response => {
-                console.log('Response:', response.data);
-                return response.data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // FIXME: Refactor the response.
-                return {
-                    status: -1
-                };
-            });
+    async uploadPainting(painting:any){
+        let formData = new FormData();
+        formData.append('painting',painting,'q1.jpeg');
+        await axios({
+            method: "post",
+            url: uploadImageUrl,
+            data: formData,
+            headers: { "Content-Type": "multipart/form-data" },
+          })
     },
     async login(account: string, password: string) {
         const data = {
