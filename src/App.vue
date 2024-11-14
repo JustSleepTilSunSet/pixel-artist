@@ -67,13 +67,14 @@ const hideModal = () => {
 };
 async function login() {
   let response = await pixelServerCli.login(account.value, password.value);
-  let isLoginSuccess = response.status > 0;
+  let isLoginSuccess = response.status >= 0;
   if (!isLoginSuccess) {
     alert("Login fail.")
     showModal();
   } else {
     hideModal();
   }
+  sessionStorage.setItem("access_token", response.access_token);
 }
 
 async function loginByGuest() {

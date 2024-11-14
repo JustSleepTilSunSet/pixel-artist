@@ -90,9 +90,11 @@ interface Square {
     },
     toUploadPainting: async function () {
       // NOTICE: Please instead v-model.
-      const canvas = document!.querySelector("canvas");      
+      const canvas = document!.querySelector("canvas");
+      console.log(sessionStorage.getItem("access_token"));
+      let accessToken = sessionStorage.getItem("access_token");
       await canvas?.toBlob(async (blob)=>{
-          await pixelServerCli.uploadPainting(blob);
+          await pixelServerCli.uploadPainting(blob, accessToken);
       });
     }
     // base64 to blob.
