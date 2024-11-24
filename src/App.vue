@@ -78,7 +78,8 @@ async function login() {
 }
 
 async function loginByGuest() {
-  await pixelServerCli.loginByGuest();
+  let response = await pixelServerCli.loginByGuest();
+  sessionStorage.setItem("access_token", response.message.access_token);
 }
 </script>
 
