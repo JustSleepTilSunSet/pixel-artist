@@ -33,6 +33,7 @@
         <div class="col-12 text-white p-3 text-center">
           <router-link to="/draw">Draw</router-link> |
           <router-link to="/about">About</router-link> |
+          <router-link to="/gallery">Gallery</router-link> |
           <button type="button" class="btn btn-outline-primary" @click="showModal" data-bs-target="#exampleModal"
             data-bs-whatever="@fat">Login</button>
         </div>
