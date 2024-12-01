@@ -9,12 +9,26 @@
               <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-              ...
+            <div class="modal-body d-flex justify-content-center align-items-center flex-column">
+              <div class="col-sm-9 text-center">
+                Your painting
+                <img :src="uploadedThumbnail" class="img-fluid"></img>
+                <div class="row justify-content-center align-items-center">
+                  <div class="col-8 col-sm-6 text-center">
+                    <label for="exampleFormControlInput1" class="form-label">Name</label>
+                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="PaintingName">
+
+                  </div>
+                  <div class="col-4 col-sm-6 text-center">
+                    <label for="paintingDescription" class="form-label">Description</label>
+                    <textarea class="form-control" id="paintingDescription" rows="3"></textarea>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary"  @click="toUploadPainting">Save changes</button>
+              <button type="button" class="btn btn-primary" @click="toUploadPainting">Save changes</button>
             </div>
           </div>
         </div>
@@ -33,8 +47,8 @@
         </button>
       </div>
       <div class="col-6 text-center">
-        <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info">
-          <i class="bi bi-arrow-bar-up"></i> 
+        <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info" @click="showUploadedModal">
+          <i class="bi bi-arrow-bar-up"></i>
           upload
         </button>
       </div>
@@ -45,13 +59,9 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
-import Modal from "bootstrap/js/dist/modal";
 import pixelServerCli from '@/services/pixelServerCli';
 
-interface Square {
-  selected: boolean;
-}
-
+const uploadedThumbnail = ref();
 const drag = ref(false);
 const squares = reactive(
   Array.from({ length: 90 }, () =>
@@ -59,8 +69,6 @@ const squares = reactive(
   )
 );
 const canvas = ref<HTMLCanvasElement | null>(null);
-const exampleModal = ref<HTMLElement | null>(null);
-let modalInstance: Modal | null = null;
 
 const draw = () => {
   if (!canvas.value) return;
@@ -107,16 +115,20 @@ const toDownloadPainting = () => {
   a.download = "Image.jpg";
   a.click();
 };
-
+const showUploadedModal = ()=>{
+  paintToBase64();
+}
 const toUploadPainting = async () => {
   // NOTICE: Please instead v-model.
   const canvas = document!.querySelector("canvas");
-  console.log(sessionStorage.getItem("access_token"));
   let accessToken = sessionStorage.getItem("access_token");
   await canvas?.toBlob(async (blob) => {
     await pixelServerCli.uploadPainting(blob, accessToken);
   });
 };
+const paintToBase64 = () => {
+  uploadedThumbnail.value = canvas.value.toDataURL("image/jpeg");
+}
 
 // 掛載時初始化
 onMounted(() => {

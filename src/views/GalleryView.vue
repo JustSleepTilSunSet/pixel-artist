@@ -1,8 +1,10 @@
 <template>
     <div>
-        <p>TBD</p>
+        <p>{{ content }}</p>
     </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref } from 'vue';
+const content = "TBD";
 </script>
