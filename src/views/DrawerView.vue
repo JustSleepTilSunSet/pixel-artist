@@ -35,9 +35,13 @@
       </div>
 
       <div id="paintingCanvas" class="col-12 p-5 text-center">
-        <canvas  ref="canvas" width="720" height="360" @mousedown="toDrawMode" @mousemove="toDraw"
+        <canvas ref="canvas" width="720" height="360" @mousedown="toDrawMode" @mousemove="toDraw"
           @mouseup="toCancelDraw">
         </canvas>
+        <div class="form-group">
+          <input type="color" class="form-control form-control-color" id="colorPicker" :v-model="selectedColor"
+            @change="onColorChange" title="Choose your color">
+        </div>
       </div>
     </div>
     <div class="row">
@@ -48,7 +52,8 @@
         </button>
       </div>
       <div class="col-6 text-center">
-        <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info" @click="showUploadedModal">
+        <button color="primary" id="btn2"  @change="onColorChange" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info"
+          @click="showUploadedModal">
           <i class="bi bi-arrow-bar-up"></i>
           upload
         </button>
@@ -59,18 +64,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, watch } from "vue";
 import pixelServerCli from '@/services/pixelServerCli';
 
 const uploadedThumbnail = ref();
 const drag = ref(false);
 const squares = reactive(
   Array.from({ length: 90 }, () =>
-    Array.from({ length: 90 }, () => ({ selected: false }))
+    Array.from({ length: 90 }, () => ({ selected: false, color:"#00000" }))
   )
 );
 const canvas = ref<HTMLCanvasElement | null>(null);
-
+const selectedColor = ref("#563d7c");
 const draw = () => {
   if (!canvas.value) return;
   const context = canvas.value.getContext("2d");
@@ -82,7 +87,7 @@ const draw = () => {
     // 繪製方格
     squares.forEach((line, i) => {
       line.forEach((square, j) => {
-        context.fillStyle = square.selected ? "red" : "white";
+        context.fillStyle = square.selected ? square.color : "white";
         context.fillRect(10 * j + 1, 10 * i + 1, 9, 9);
       });
     });
@@ -101,6 +106,7 @@ const toDraw = (event: MouseEvent) => {
 
   if (x >= 0 && x < 90 && y >= 0 && y < 90) {
     squares[y][x].selected = true;
+    squares[y][x].color = selectedColor.value;
     draw();
   }
 };
@@ -116,7 +122,12 @@ const toDownloadPainting = () => {
   a.download = "Image.jpg";
   a.click();
 };
-const showUploadedModal = ()=>{
+
+const onColorChange = (event) => {
+  selectedColor.value = event.target.value;
+};
+
+const showUploadedModal = () => {
   paintToBase64();
 }
 const toUploadPainting = async () => {
@@ -143,6 +154,6 @@ onMounted(() => {
   background-image: url('@/assets/canvas-bg.jpeg');
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center; 
+  background-position: center;
 }
 </style>
