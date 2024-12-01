@@ -1,7 +1,25 @@
 <template>
   <div>
-    <!-- <Drawer></Drawer> -->
     <div class="row my-3">
+      <!-- Modal -->
+      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary"  @click="toUploadPainting">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="col-12 bg-light p-5 text-center">
         <canvas ref="canvas" width="720" height="360" @mousedown="toDrawMode" @mousemove="toDraw"
           @mouseup="toCancelDraw">
@@ -15,8 +33,8 @@
         </button>
       </div>
       <div class="col-6 text-center">
-        <button color="primary" id="btn2" data-bs-target="#exampleModal" data-bs-whatever="@fat"
-          @click="toUploadPainting">
+        <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info">
+          <i class="bi bi-arrow-bar-up"></i> 
           upload
         </button>
       </div>
@@ -98,15 +116,6 @@ const toUploadPainting = async () => {
   await canvas?.toBlob(async (blob) => {
     await pixelServerCli.uploadPainting(blob, accessToken);
   });
-};
-
-const showModal = () => {
-  if (exampleModal.value) {
-    if (!modalInstance) {
-      modalInstance = new Modal(exampleModal.value);
-    }
-    modalInstance.show();
-  }
 };
 
 // 掛載時初始化
