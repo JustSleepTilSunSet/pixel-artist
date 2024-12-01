@@ -42,7 +42,8 @@
     </div>
     <div class="row">
       <div class="col-6 text-center">
-        <button id="btn1" @click="toDownloadPainting">
+        <button id="btn1" @click="toDownloadPainting" class="btn btn-info">
+          <i class="bi bi-arrow-bar-down"></i>
           download
         </button>
       </div>
