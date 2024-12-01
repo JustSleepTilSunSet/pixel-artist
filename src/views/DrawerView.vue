@@ -34,8 +34,8 @@
         </div>
       </div>
 
-      <div class="col-12 bg-light p-5 text-center">
-        <canvas ref="canvas" width="720" height="360" @mousedown="toDrawMode" @mousemove="toDraw"
+      <div id="paintingCanvas" class="col-12 p-5 text-center">
+        <canvas  ref="canvas" width="720" height="360" @mousedown="toDrawMode" @mousemove="toDraw"
           @mouseup="toCancelDraw">
         </canvas>
       </div>
@@ -137,7 +137,11 @@ onMounted(() => {
 </script>
 
 <style>
-canvas {
+#paintingCanvas {
   border: 1px solid black;
+  background-image: url('@/assets/canvas-bg.jpeg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; 
 }
 </style>
