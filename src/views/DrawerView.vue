@@ -3,7 +3,7 @@
     <div class="row my-3">
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog" >
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
@@ -27,8 +27,8 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary" @click="toUploadPainting">Save changes</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="closeButton">Close</button>
+              <button id="modalUpload" type="button" class="btn btn-primary"  @click="toUploadPainting">Save changes</button>
             </div>
           </div>
         </div>
@@ -72,6 +72,8 @@ import pixelServerCli from '@/services/pixelServerCli';
 
 const uploadedThumbnail = ref();
 const drag = ref(false);
+const closeButton = ref(null);
+
 const squares = reactive(
   Array.from({ length: 90 }, () =>
     Array.from({ length: 90 }, () => ({ selected: false, color:"#00000" }))
@@ -116,6 +118,10 @@ const toDraw = (event: MouseEvent) => {
   }
 };
 
+const closeModal = () => {
+  closeButton.value.click();
+};
+
 const toCancelDraw = () => {
   drag.value = false;
 };
@@ -135,13 +141,16 @@ const onColorChange = (event) => {
 const showUploadedModal = () => {
   paintToBase64();
 }
+
 const toUploadPainting = async () => {
   // NOTICE: Please instead v-model.
+
   const canvas = document!.querySelector("canvas");
   let accessToken = sessionStorage.getItem("access_token");
   await canvas?.toBlob(async (blob) => {
     await pixelServerCli.uploadPainting(blob, accessToken);
   });
+  closeModal();
 };
 const paintToBase64 = () => {
   uploadedThumbnail.value = canvas.value.toDataURL("image/jpeg");
@@ -161,4 +170,5 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-position: center;
 }
+
 </style>
