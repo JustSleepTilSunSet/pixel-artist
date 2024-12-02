@@ -38,11 +38,11 @@
         <canvas ref="canvas" width="720" height="360" @mousedown="toDrawMode" @mousemove="toDraw"
           @mouseup="toCancelDraw">
         </canvas>
-        <div class="form-group d-flex align-items-center gap-3">
-          <button type="button" class="btn btn-primary p-1 rounded-circle" @click="cleanColor">
-            <i class="bi bi-eraser rounded-circle"></i>
+        <div class="form-group d-flex justify-content-center gap-3">
+          <button type="button" class="btn btn-primary p-1 rounded-circle" style="width: 40px; height: 40px;" @click="cleanColor">
+            <i class="bi bi-eraser"></i>
           </button>
-          <input type="color" class="form-control form-control-color" id="colorPicker" :v-model="selectedColor"
+          <input type="color" class="form-control form-control-color rounded-circle" style="width: 40px; height: 40px;" id="colorPicker" :v-model="selectedColor"
             @change="onColorChange" title="Choose your color">
         </div>
       </div>
