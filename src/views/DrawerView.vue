@@ -3,7 +3,7 @@
     <div class="row my-3">
       <!-- Modal -->
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" >
+        <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
@@ -15,20 +15,23 @@
                 <img :src="uploadedThumbnail" class="img-fluid"></img>
                 <div class="row justify-content-center align-items-center">
                   <div class="col-8 col-sm-6 text-center">
-                    <label for="exampleFormControlInput1" class="form-label">Name</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="PaintingName">
+                    <label for="exampleFormControlInput1" class="form-label">Painting name</label>
+                    <input type="email" class="form-control" id="exampleFormControlInput1" v-model="paintingName"
+                      placeholder="PaintingName">
 
                   </div>
                   <div class="col-4 col-sm-6 text-center">
                     <label for="paintingDescription" class="form-label">Description</label>
-                    <textarea class="form-control" id="paintingDescription" rows="3"></textarea>
+                    <textarea class="form-control" id="paintingDescription" v-model="paintingDescription"
+                      rows="3"></textarea>
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" ref="closeButton">Close</button>
-              <button id="modalUpload" type="button" class="btn btn-primary"  @click="toUploadPainting">Save changes</button>
+              <button id="modalUpload" type="button" class="btn btn-primary" @click="toUploadPainting">Save
+                changes</button>
             </div>
           </div>
         </div>
@@ -39,11 +42,12 @@
           @mouseup="toCancelDraw">
         </canvas>
         <div class="form-group d-flex justify-content-center gap-3">
-          <button type="button" class="btn btn-primary p-1 rounded-circle" style="width: 40px; height: 40px;" @click="cleanColor">
+          <button type="button" class="btn btn-primary p-1 rounded-circle" style="width: 40px; height: 40px;"
+            @click="cleanColor">
             <i class="bi bi-eraser"></i>
           </button>
-          <input type="color" class="form-control form-control-color rounded-circle" style="width: 40px; height: 40px;" id="colorPicker" :v-model="selectedColor"
-            @change="onColorChange" title="Choose your color">
+          <input type="color" class="form-control form-control-color rounded-circle" style="width: 40px; height: 40px;"
+            id="colorPicker" :v-model="selectedColor" @change="onColorChange" title="Choose your color">
         </div>
       </div>
     </div>
@@ -55,8 +59,8 @@
         </button>
       </div>
       <div class="col-6 text-center">
-        <button color="primary" id="btn2"  @change="onColorChange" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info"
-          @click="showUploadedModal">
+        <button color="primary" id="btn2" @change="onColorChange" data-bs-toggle="modal" data-bs-target="#exampleModal"
+          class="btn btn-info" @click="showUploadedModal">
           <i class="bi bi-arrow-bar-up"></i>
           upload
         </button>
@@ -71,12 +75,14 @@ import { ref, reactive, onMounted, watch } from "vue";
 import pixelServerCli from '@/services/pixelServerCli';
 
 const uploadedThumbnail = ref();
+const paintingName = ref("");
+const paintingDescription = ref("");
 const drag = ref(false);
 const closeButton = ref(null);
 
 const squares = reactive(
   Array.from({ length: 90 }, () =>
-    Array.from({ length: 90 }, () => ({ selected: false, color:"#00000" }))
+    Array.from({ length: 90 }, () => ({ selected: false, color: "#00000" }))
   )
 );
 const canvas = ref<HTMLCanvasElement | null>(null);
@@ -102,7 +108,7 @@ const draw = () => {
 const toDrawMode = () => {
   drag.value = true;
 };
-const cleanColor = ()=>{
+const cleanColor = () => {
   selectedColor.value = "white";
 }
 const toDraw = (event: MouseEvent) => {
@@ -147,8 +153,13 @@ const toUploadPainting = async () => {
 
   const canvas = document!.querySelector("canvas");
   let accessToken = sessionStorage.getItem("access_token");
+  console.log("paintingName.value:" + paintingName.value);
+  console.log("paintingDescription.value:" + paintingDescription.value);
   await canvas?.toBlob(async (blob) => {
-    await pixelServerCli.uploadPainting(blob, accessToken);
+    await pixelServerCli.uploadPainting(blob, accessToken, {
+      paintingName: paintingName.value + "",
+      paintingDescription: paintingDescription.value + "",
+    });
   });
   closeModal();
 };
@@ -170,5 +181,4 @@ onMounted(() => {
   background-repeat: no-repeat;
   background-position: center;
 }
-
 </style>

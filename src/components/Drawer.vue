@@ -94,7 +94,7 @@ interface Square {
       console.log(sessionStorage.getItem("access_token"));
       let accessToken = sessionStorage.getItem("access_token");
       await canvas?.toBlob(async (blob)=>{
-          await pixelServerCli.uploadPainting(blob, accessToken);
+          // await pixelServerCli.uploadPainting(blob, accessToken);
       });
     }
     // base64 to blob.
