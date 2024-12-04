@@ -2,6 +2,7 @@ import axios from 'axios';
 const uploadImageUrl = process.env.VUE_APP_UPLOAD_IMAGE_URL;
 const LOGIN_URL = process.env.VUE_APP_LOGIN_URL;
 const LOGIN_BY_GUEST_URL = process.env.VUE_APP_LOGIN_BY_GUEST_URL;
+const LIST_PAINTING_WITH_UID = process.env.VUE_APP_LIST_PAINTING_WITH_UID;
 
 
 export default {
@@ -10,7 +11,6 @@ export default {
         formData.append('painting', painting, 'q1.jpeg');
         formData.append('paintingName', paintingDetail.paintingName);
         formData.append('paintingDescription', paintingDetail.paintingDescription);
-        console.log(accessToken);
         await axios({
             method: "post",
             url: uploadImageUrl,
@@ -53,5 +53,26 @@ export default {
                     status: -1
                 };
             });
+    },
+    async listImageById(accessToken: string) {
+        return await axios({
+            method: "post",
+            url: LIST_PAINTING_WITH_UID,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + accessToken
+            },
+        }).then(response => {
+            console.log('Response:', response.data);
+            return response.data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // FIXME: Refactor the response.
+            return {
+                status: -1
+            };
+        });
     }
+
 }

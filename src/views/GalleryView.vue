@@ -46,8 +46,17 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import pixelServerCli from '@/services/pixelServerCli';
+
 const paintings = ref([]);
-onMounted(() => {
+onMounted(async () => {
+    let accessToken = sessionStorage.getItem("access_token");
+    if(!accessToken){
+        console.log("Missing token.");
+        return;
+    }
+    // console.log(accessToken);
+    await pixelServerCli.listImageById(accessToken);
     for (let idx = 0; idx < 10; idx++) {
         paintings.value.push({
             idx,

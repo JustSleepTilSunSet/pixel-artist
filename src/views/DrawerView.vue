@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import pixelServerCli from '@/services/pixelServerCli';
 
 const uploadedThumbnail = ref();
