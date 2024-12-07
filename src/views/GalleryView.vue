@@ -35,10 +35,10 @@
         </div>
         <div class="row">
             <div class="col-4 text-center mb-3" v-for="item in paintings" :key="item.id">
-                <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                <!-- <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal"
                     class="btn btn-info">
                     測試
-                </button>
+                </button> -->
                 <img style='display:block; width:100px;height:100px;' id='base64image'
                 :src="item.image" class="border p-3" />
             </div>
@@ -59,10 +59,12 @@ onMounted(async () => {
     }
     // console.log(accessToken);
     let getPaintingList = await pixelServerCli.listImageById(accessToken);
-    console.log(JSON.stringify(getPaintingList, null, 2));
+    // console.log(JSON.stringify(getPaintingList, null, 2));
     let paintingList = getPaintingList.data.paintingResult.map(({ paintingPath }) => paintingPath);
-    let paintingData = await pixelServerCli.getPainting(paintingList[0]);
-    for (let idx = 0; idx < 10; idx++) {
+    // console.log("paintingList:",JSON.stringify(getPaintingList,null,2));
+    for (let idx = 0; idx < getPaintingList.data.paintingCount; idx++) {
+        console.log(idx);
+        let paintingData = await pixelServerCli.getPainting(paintingList[idx]);
         paintings.value.push({
             idx,
             image: "data:image/jpeg;base64, " + paintingData.image
