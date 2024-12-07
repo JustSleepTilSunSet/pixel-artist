@@ -3,6 +3,7 @@ const uploadImageUrl = process.env.VUE_APP_UPLOAD_IMAGE_URL;
 const LOGIN_URL = process.env.VUE_APP_LOGIN_URL;
 const LOGIN_BY_GUEST_URL = process.env.VUE_APP_LOGIN_BY_GUEST_URL;
 const LIST_PAINTING_WITH_UID = process.env.VUE_APP_LIST_PAINTING_WITH_UID;
+const LIST_GET_PAINTING = process.env.VUE_APP_LIST_GET_PAINTING;
 
 
 export default {
@@ -66,13 +67,36 @@ export default {
             console.log('Response:', response.data);
             return response.data;
         })
-        .catch(error => {
-            console.error('Error:', error);
-            // FIXME: Refactor the response.
-            return {
-                status: -1
-            };
-        });
+            .catch(error => {
+                console.error('Error:', error);
+                // FIXME: Refactor the response.
+                return {
+                    status: -1
+                };
+            });
+    },
+
+    async getPainting(paintingPath: string, accessToken: string) {
+        return await axios({
+            method: "post",
+            url: LIST_GET_PAINTING,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + accessToken
+            },
+            data: {
+                paintingPath
+            }
+        }).then(response => {
+            console.log('Response:', response.data);
+            return response.data;
+        })
+            .catch(error => {
+                console.error('Error:', error);
+                return {
+                    status: -1
+                };
+            });
     }
 
 }

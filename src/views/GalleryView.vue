@@ -35,10 +35,12 @@
         </div>
         <div class="row">
             <div class="col-4 text-center mb-3" v-for="item in paintings" :key="item.id">
-                <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-info">
+                <button color="primary" id="btn2" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                    class="btn btn-info">
                     測試
                 </button>
-                <div class="border p-3" onclick="">{{ item.content }}</div>
+                <img style='display:block; width:100px;height:100px;' id='base64image'
+                :src="item.image" class="border p-3" />
             </div>
         </div>
     </div>
@@ -51,16 +53,19 @@ import pixelServerCli from '@/services/pixelServerCli';
 const paintings = ref([]);
 onMounted(async () => {
     let accessToken = sessionStorage.getItem("access_token");
-    if(!accessToken){
+    if (!accessToken) {
         console.log("Missing token.");
         return;
     }
     // console.log(accessToken);
-    await pixelServerCli.listImageById(accessToken);
+    let getPaintingList = await pixelServerCli.listImageById(accessToken);
+    console.log(JSON.stringify(getPaintingList, null, 2));
+    let paintingList = getPaintingList.data.paintingResult.map(({ paintingPath }) => paintingPath);
+    let paintingData = await pixelServerCli.getPainting(paintingList[0]);
     for (let idx = 0; idx < 10; idx++) {
         paintings.value.push({
             idx,
-            content: "TBD"
+            image: "data:image/jpeg;base64, " + paintingData.image
         });
     }
 })
