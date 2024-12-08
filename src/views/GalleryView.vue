@@ -4,7 +4,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Yours</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body d-flex justify-content-center align-items-center flex-column">
@@ -29,6 +29,7 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                             ref="closeButton">Close</button>
                         <button id="modalUpload" type="button" class="btn btn-primary" @click="toEdit">Edit</button>
+                        <button id="modalUpload" type="button" class="btn btn-danger" @click="toDelete">Delete</button>
                     </div>
                 </div>
             </div>
@@ -87,5 +88,10 @@ function toShowDetail(painting) {
 
 function toEdit(){
     alert("TBD");
+}
+function toDelete(){
+    if(confirm("are you sure?")){
+        alert("TBD");
+    }
 }
 </script>
