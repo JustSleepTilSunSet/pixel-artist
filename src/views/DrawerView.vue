@@ -46,6 +46,10 @@
             @click="cleanColor">
             <i class="bi bi-eraser"></i>
           </button>
+          <button type="button" class="btn btn-primary p-1 rounded-circle" style="width: 40px; height: 40px;"
+            @click="setColor">
+            <i class="bi bi-pencil-fill"></i>
+          </button>
           <input type="color" class="form-control form-control-color rounded-circle" style="width: 40px; height: 40px;"
             id="colorPicker" :v-model="selectedColor" @change="onColorChange" title="Choose your color">
         </div>
@@ -87,6 +91,7 @@ const squares = reactive(
 );
 const canvas = ref<HTMLCanvasElement | null>(null);
 const selectedColor = ref("#563d7c");
+const previousColor = ref("#563d7c");
 const draw = () => {
   if (!canvas.value) return;
   const context = canvas.value.getContext("2d");
@@ -108,9 +113,15 @@ const draw = () => {
 const toDrawMode = () => {
   drag.value = true;
 };
+
 const cleanColor = () => {
   selectedColor.value = "white";
 }
+
+const setColor = () => {
+  selectedColor.value = previousColor.value;
+}
+
 const toDraw = (event: MouseEvent) => {
   if (!drag.value || !canvas.value) return;
   const rect = canvas.value.getBoundingClientRect();
@@ -142,6 +153,7 @@ const toDownloadPainting = () => {
 
 const onColorChange = (event) => {
   selectedColor.value = event.target.value;
+  previousColor.value = event.target.value;
 };
 
 const showUploadedModal = () => {
@@ -153,8 +165,8 @@ const toUploadPainting = async () => {
 
   const canvas = document!.querySelector("canvas");
   let accessToken = sessionStorage.getItem("access_token");
-  console.log("paintingName.value:" + paintingName.value);
-  console.log("paintingDescription.value:" + paintingDescription.value);
+  // console.log("paintingName.value:" + paintingName.value);
+  // console.log("paintingDescription.value:" + paintingDescription.value);
   await canvas?.toBlob(async (blob) => {
     await pixelServerCli.uploadPainting(blob, accessToken, {
       paintingName: paintingName.value + "",
