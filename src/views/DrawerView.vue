@@ -6,7 +6,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <h5 class="modal-title" id="exampleModalLabel">Upload painting</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body d-flex justify-content-center align-items-center flex-column">
@@ -162,17 +162,22 @@ const showUploadedModal = () => {
 
 const toUploadPainting = async () => {
   // NOTICE: Please instead v-model.
-
   const canvas = document!.querySelector("canvas");
   let accessToken = sessionStorage.getItem("access_token");
-  // console.log("paintingName.value:" + paintingName.value);
-  // console.log("paintingDescription.value:" + paintingDescription.value);
-  await canvas?.toBlob(async (blob) => {
-    await pixelServerCli.uploadPainting(blob, accessToken, {
-      paintingName: paintingName.value + "",
-      paintingDescription: paintingDescription.value + "",
-    });
+  let uploadResult = await new Promise(async (res, rej) => {
+    canvas?.toBlob(async (blob) => {
+      let uploadResult = await pixelServerCli.uploadPainting(blob, accessToken, {
+        paintingName: paintingName.value + "",
+        paintingDescription: paintingDescription.value + "",
+      });
+      res(uploadResult);
+    })
+  }).then(data=>{
+    return data;
   });
+  if (uploadResult.data.status == -2){
+    alert("An error occured, please re-logined.");
+  }
   closeModal();
 };
 const paintToBase64 = () => {

@@ -12,7 +12,7 @@ export default {
         formData.append('painting', painting, 'q1.jpeg');
         formData.append('paintingName', paintingDetail.paintingName);
         formData.append('paintingDescription', paintingDetail.paintingDescription);
-        await axios({
+        return await axios({
             method: "post",
             url: uploadImageUrl,
             data: formData,
