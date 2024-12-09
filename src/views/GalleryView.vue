@@ -14,19 +14,20 @@
                             <div class="row justify-content-center align-items-center">
                                 <div class="col-8 col-sm-6 text-center">
                                     <label for="exampleFormControlInput1" class="form-label">Name</label>
-                                    <input type="email" class="form-control" id="exampleFormControlInput1" disabled="true"
-                                        placeholder="PaintingName">
+                                    <input type="email" class="form-control" id="exampleFormControlInput1"
+                                        disabled="true" v-model="focusedPaintingName" placeholder="PaintingName">
 
                                 </div>
                                 <div class="col-4 col-sm-6 text-center">
                                     <label for="paintingDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="paintingDescription" rows="3" disabled="true"></textarea>
+                                    <textarea class="form-control" id="paintingDescription" rows="3" disabled="true"
+                                        v-model="focusedPaintingDetail"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button id = "closeModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        <button id="closeModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                             ref="closeButton">Close</button>
                         <button id="modalUpload" type="button" class="btn btn-primary" @click="toEdit">Edit</button>
                         <button id="modalUpload" type="button" class="btn btn-danger" @click="toDelete">Delete</button>
@@ -41,8 +42,7 @@
                     測試
                 </button> -->
                 <img style='display:block; width:100px;height:100px;' id='base64image' data-bs-toggle="modal"
-                    data-bs-target="#exampleModal" :src="item.image" class="border p-3"
-                    @click="toShowDetail(item)" />
+                    data-bs-target="#exampleModal" :src="item.image" class="border p-3" @click="toShowDetail(item)" />
             </div>
         </div>
     </div>
@@ -92,8 +92,8 @@ function toShowDetail(painting) {
     focusedPaintingDetail.value = painting.paintingDescription;
 }
 
-function toEdit(){
-    store.commit('setPainting',{
+function toEdit() {
+    store.commit('setPainting', {
         focusedPainting: focusedPainting.value,
         focusedPaintingName: focusedPaintingName.value,
         focusedPaintingDetail: focusedPaintingDetail.value
@@ -102,8 +102,8 @@ function toEdit(){
     router.push('/draw');
 }
 
-function toDelete(){
-    if(confirm("are you sure?")){
+function toDelete() {
+    if (confirm("are you sure?")) {
         alert("TBD");
     }
 }

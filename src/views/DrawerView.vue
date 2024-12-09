@@ -197,6 +197,8 @@ onMounted(() => {
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
     img.src = store.state.painting.focusedPainting;
+    paintingName.value = store.state.painting.focusedPaintingName;
+    paintingDescription.value = store.state.painting.focusedPaintingDetail;
   }
 });
 </script>
