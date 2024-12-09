@@ -94,6 +94,7 @@ const squares = reactive(
 const canvas = ref<HTMLCanvasElement | null>(null);
 const selectedColor = ref("#563d7c");
 const previousColor = ref("#563d7c");
+let pixelMap = {};
 const draw = () => {
   if (!canvas.value) return;
   const context = canvas.value.getContext("2d");
@@ -107,6 +108,7 @@ const draw = () => {
       line.forEach((square, j) => {
         context.fillStyle = square.selected ? square.color : "white";
         context.fillRect(10 * j + 1, 10 * i + 1, 9, 9);
+        pixelMap[`${10 * j + 1},${10 * i + 1}`] = context.fillStyle;
       });
     });
   }
@@ -159,6 +161,7 @@ const onColorChange = (event) => {
 };
 
 const showUploadedModal = () => {
+  // console.log(JSON.stringify(pixelMap,null,2));
   paintToBase64();
 }
 
@@ -188,17 +191,12 @@ const paintToBase64 = () => {
 
 // 掛載時初始化
 onMounted(() => {
-  draw();
   if (Object.keys(store.state.painting).length > 0) {
-    const canvas = document!.querySelector("canvas");
-    const ctx = canvas.getContext("2d");
-    let img = new Image();
-    img.onload = () => {
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    };
-    img.src = store.state.painting.focusedPainting;
+    // img.src = store.state.painting.focusedPainting;
     paintingName.value = store.state.painting.focusedPaintingName;
     paintingDescription.value = store.state.painting.focusedPaintingDetail;
+  } else {
+    draw();
   }
 });
 </script>
