@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                        <button id = "closeModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                             ref="closeButton">Close</button>
                         <button id="modalUpload" type="button" class="btn btn-primary" @click="toEdit">Edit</button>
                         <button id="modalUpload" type="button" class="btn btn-danger" @click="toDelete">Delete</button>
@@ -51,11 +51,17 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import pixelServerCli from '@/services/pixelServerCli';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 
+const store = useStore();
 const paintings = ref([]);
 const focusedPainting = ref();
 const focusedPaintingName = ref();
 const focusedPaintingDetail = ref();
+const closeButton = ref();
+const router = useRouter();
+
 onMounted(async () => {
     try {
         let accessToken = sessionStorage.getItem("access_token");
@@ -65,15 +71,15 @@ onMounted(async () => {
         }
         // console.log(accessToken);
         let getPaintingList = await pixelServerCli.listImageById(accessToken);
-        // console.log("getPaintingList ",JSON.stringify(getPaintingList, null, 2));
-        let paintingList = getPaintingList.data.paintingResult.map(({ paintingPath }) => paintingPath);
-        // console.log("paintingList:",JSON.stringify(getPaintingList,null,2));
+        let paintingList = getPaintingList.data.paintingResult;
         for (let idx = 0; idx < getPaintingList.data.paintingCount; idx++) {
-            let paintingData = await pixelServerCli.getPainting(paintingList[idx]);
-            paintings.value.push({
-                idx,
-                image: "data:image/jpeg;base64, " + paintingData.image
-            });
+            let paintingData = await pixelServerCli.getPainting(paintingList[idx].paintingPath);
+            let paintingInfo = {
+                image: "data:image/jpeg;base64, " + paintingData.image,
+                paintingDescription: paintingList[idx].paintingDescription,
+                customName: paintingList[idx].customName
+            };
+            paintings.value.push(paintingInfo);
         }
     } catch (err) {
         console.log(err.message);
@@ -87,8 +93,15 @@ function toShowDetail(painting) {
 }
 
 function toEdit(){
-    alert("TBD");
+    store.commit('setPainting',{
+        focusedPainting: focusedPainting.value,
+        focusedPaintingName: focusedPaintingName.value,
+        focusedPaintingDetail: focusedPaintingDetail.value
+    });
+    closeButton.value.click();
+    router.push('/draw');
 }
+
 function toDelete(){
     if(confirm("are you sure?")){
         alert("TBD");

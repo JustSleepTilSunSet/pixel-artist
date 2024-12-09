@@ -77,7 +77,9 @@
 <script setup lang="ts">
 import { ref, reactive, onMounted } from "vue";
 import pixelServerCli from '@/services/pixelServerCli';
+import { useStore } from 'vuex';
 
+const store = useStore();
 const uploadedThumbnail = ref();
 const paintingName = ref("");
 const paintingDescription = ref("");
@@ -172,10 +174,10 @@ const toUploadPainting = async () => {
       });
       res(uploadResult);
     })
-  }).then(data=>{
+  }).then(data => {
     return data;
   });
-  if (uploadResult.data.status == -2){
+  if (uploadResult.data.status == -2) {
     alert("An error occured, please re-logined.");
   }
   closeModal();
@@ -187,6 +189,15 @@ const paintToBase64 = () => {
 // 掛載時初始化
 onMounted(() => {
   draw();
+  if (Object.keys(store.state.painting).length > 0) {
+    const canvas = document!.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+    let img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+    img.src = store.state.painting.focusedPainting;
+  }
 });
 </script>
 
