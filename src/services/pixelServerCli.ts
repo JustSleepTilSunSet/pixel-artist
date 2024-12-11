@@ -4,14 +4,15 @@ const LOGIN_URL = process.env.VUE_APP_LOGIN_URL;
 const LOGIN_BY_GUEST_URL = process.env.VUE_APP_LOGIN_BY_GUEST_URL;
 const LIST_PAINTING_WITH_UID = process.env.VUE_APP_LIST_PAINTING_WITH_UID;
 const LIST_GET_PAINTING = process.env.VUE_APP_LIST_GET_PAINTING;
-
+const GET_PIXEL_MAP_BY_PATH = process.env.VUE_APP_GET_PIXEL_MAP_BY_PATH;
 
 export default {
-    async uploadPainting(painting: any, accessToken: string | null, paintingDetail: { paintingName: string, paintingDescription: string }) {
+    async uploadPainting(painting: any, accessToken: string | null, paintingDetail: { paintingName: string, paintingDescription: string, pixelMap: any }) {
         let formData = new FormData();
         formData.append('painting', painting, 'q1.jpeg');
         formData.append('paintingName', paintingDetail.paintingName);
         formData.append('paintingDescription', paintingDetail.paintingDescription);
+        formData.append('pixelMap', JSON.stringify(paintingDetail.pixelMap));
         return await axios({
             method: "post",
             url: uploadImageUrl,
@@ -75,11 +76,32 @@ export default {
                 };
             });
     },
-
     async getPainting(paintingPath: string, accessToken: string) {
         return await axios({
             method: "post",
             url: LIST_GET_PAINTING,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + accessToken
+            },
+            data: {
+                paintingPath
+            }
+        }).then(response => {
+            console.log('Response:', response.data);
+            return response.data;
+        })
+            .catch(error => {
+                console.error('Error:', error);
+                return {
+                    status: -1
+                };
+            });
+    },
+    async getPixelMapByPath(paintingPath: string, accessToken: string) {
+        return await axios({
+            method: "post",
+            url: GET_PIXEL_MAP_BY_PATH,
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + accessToken

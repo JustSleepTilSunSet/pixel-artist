@@ -37,10 +37,6 @@
         </div>
         <div class="row">
             <div class="col-4 text-center mb-3" v-for="item in paintings" :key="item.id">
-                <!-- <button color="primary" id="btn2"
-                    class="btn btn-info">
-                    測試
-                </button> -->
                 <img style='display:block; width:100px;height:100px;' id='base64image' data-bs-toggle="modal"
                     data-bs-target="#exampleModal" :src="item.image" class="border p-3" @click="toShowDetail(item)" />
             </div>
@@ -59,6 +55,7 @@ const paintings = ref([]);
 const focusedPainting = ref();
 const focusedPaintingName = ref();
 const focusedPaintingDetail = ref();
+const focusedPaintingMap = ref();
 const closeButton = ref();
 const router = useRouter();
 
@@ -69,15 +66,17 @@ onMounted(async () => {
             console.log("Missing token.");
             return;
         }
-        // console.log(accessToken);
         let getPaintingList = await pixelServerCli.listImageById(accessToken);
+        console.log(JSON.stringify(getPaintingList,null,2));
         let paintingList = getPaintingList.data.paintingResult;
         for (let idx = 0; idx < getPaintingList.data.paintingCount; idx++) {
             let paintingData = await pixelServerCli.getPainting(paintingList[idx].paintingPath);
+            let paintingMap = await pixelServerCli.getPixelMapByPath(paintingList[idx].paintingPath);
             let paintingInfo = {
                 image: "data:image/jpeg;base64, " + paintingData.image,
                 paintingDescription: paintingList[idx].paintingDescription,
-                customName: paintingList[idx].customName
+                customName: paintingList[idx].customName,
+                paintingMap: paintingMap.pixelMap
             };
             paintings.value.push(paintingInfo);
         }
@@ -90,13 +89,15 @@ function toShowDetail(painting) {
     focusedPainting.value = painting.image;
     focusedPaintingName.value = painting.customName;
     focusedPaintingDetail.value = painting.paintingDescription;
+    focusedPaintingMap.value = painting.paintingMap;
 }
 
 function toEdit() {
     store.commit('setPainting', {
         focusedPainting: focusedPainting.value,
         focusedPaintingName: focusedPaintingName.value,
-        focusedPaintingDetail: focusedPaintingDetail.value
+        focusedPaintingDetail: focusedPaintingDetail.value,
+        focusedPaintingMap: focusedPaintingMap.value
     });
     closeButton.value.click();
     router.push('/draw');

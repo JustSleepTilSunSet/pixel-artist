@@ -83,14 +83,16 @@ const store = useStore();
 const uploadedThumbnail = ref();
 const paintingName = ref("");
 const paintingDescription = ref("");
+const paintingMap = ref();
 const drag = ref(false);
 const closeButton = ref(null);
 
-const squares = reactive(
+let squares = reactive(
   Array.from({ length: 90 }, () =>
     Array.from({ length: 90 }, () => ({ selected: false, color: "#00000" }))
   )
 );
+
 const canvas = ref<HTMLCanvasElement | null>(null);
 const selectedColor = ref("#563d7c");
 const previousColor = ref("#563d7c");
@@ -108,7 +110,6 @@ const draw = () => {
       line.forEach((square, j) => {
         context.fillStyle = square.selected ? square.color : "white";
         context.fillRect(10 * j + 1, 10 * i + 1, 9, 9);
-        pixelMap[`${10 * j + 1},${10 * i + 1}`] = context.fillStyle;
       });
     });
   }
@@ -174,6 +175,7 @@ const toUploadPainting = async () => {
       let uploadResult = await pixelServerCli.uploadPainting(blob, accessToken, {
         paintingName: paintingName.value + "",
         paintingDescription: paintingDescription.value + "",
+        pixelMap: squares
       });
       res(uploadResult);
     })
@@ -189,15 +191,14 @@ const paintToBase64 = () => {
   uploadedThumbnail.value = canvas.value.toDataURL("image/jpeg");
 }
 
-// 掛載時初始化
 onMounted(() => {
   if (Object.keys(store.state.painting).length > 0) {
-    // img.src = store.state.painting.focusedPainting;
     paintingName.value = store.state.painting.focusedPaintingName;
     paintingDescription.value = store.state.painting.focusedPaintingDetail;
-  } else {
-    draw();
+    paintingMap.value = store.state.painting.focusedPaintingMap;
+    squares = paintingMap.value;
   }
+  draw();
 });
 </script>
 
