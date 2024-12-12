@@ -56,30 +56,34 @@ const focusedPainting = ref();
 const focusedPaintingName = ref();
 const focusedPaintingDetail = ref();
 const focusedPaintingMap = ref();
+const focusedPaintingPath = ref();
 const closeButton = ref();
 const router = useRouter();
-
+async function getPainting() {
+    let accessToken = sessionStorage.getItem("access_token");
+    if (!accessToken) {
+        console.log("Missing token.");
+        return;
+    }
+    paintings.value = [];
+    let getPaintingList = await pixelServerCli.listImageById(accessToken);
+    let paintingList = getPaintingList.data.paintingResult;
+    for (let idx = 0; idx < getPaintingList.data.paintingCount; idx++) {
+        let paintingData = await pixelServerCli.getPainting(paintingList[idx].paintingPath);
+        let paintingMap = await pixelServerCli.getPixelMapByPath(paintingList[idx].paintingPath);
+        let paintingInfo = {
+            image: "data:image/jpeg;base64, " + paintingData.image,
+            paintingDescription: paintingList[idx].paintingDescription,
+            customName: paintingList[idx].customName,
+            paintingMap: paintingMap.pixelMap,
+            paintingPath: paintingList[idx].paintingPath
+        };
+        paintings.value.push(paintingInfo);
+    }
+}
 onMounted(async () => {
     try {
-        let accessToken = sessionStorage.getItem("access_token");
-        if (!accessToken) {
-            console.log("Missing token.");
-            return;
-        }
-        let getPaintingList = await pixelServerCli.listImageById(accessToken);
-        console.log(JSON.stringify(getPaintingList,null,2));
-        let paintingList = getPaintingList.data.paintingResult;
-        for (let idx = 0; idx < getPaintingList.data.paintingCount; idx++) {
-            let paintingData = await pixelServerCli.getPainting(paintingList[idx].paintingPath);
-            let paintingMap = await pixelServerCli.getPixelMapByPath(paintingList[idx].paintingPath);
-            let paintingInfo = {
-                image: "data:image/jpeg;base64, " + paintingData.image,
-                paintingDescription: paintingList[idx].paintingDescription,
-                customName: paintingList[idx].customName,
-                paintingMap: paintingMap.pixelMap
-            };
-            paintings.value.push(paintingInfo);
-        }
+        await getPainting();
     } catch (err) {
         console.log(err.message);
     }
@@ -90,6 +94,7 @@ function toShowDetail(painting) {
     focusedPaintingName.value = painting.customName;
     focusedPaintingDetail.value = painting.paintingDescription;
     focusedPaintingMap.value = painting.paintingMap;
+    focusedPaintingPath.value = painting.paintingPath;
 }
 
 function toEdit() {
@@ -103,9 +108,11 @@ function toEdit() {
     router.push('/draw');
 }
 
-function toDelete() {
+async function toDelete() {
     if (confirm("are you sure?")) {
-        alert("TBD");
+        await pixelServerCli.deletePaintingByPath(focusedPaintingPath.value);
+        closeButton.value.click();
+        await getPainting();
     }
 }
 </script>
