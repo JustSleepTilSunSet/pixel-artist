@@ -1,5 +1,6 @@
 <template>
   <div class="about">
-    <h1>The application is Vue-Router template.</h1>
+    <a href="https://github.com/JustSleepTilSunSet">Github</a><br>
+    Weclome to your contribution. :)
   </div>
 </template>

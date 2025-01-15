@@ -96,7 +96,6 @@ let squares = reactive(
 const canvas = ref<HTMLCanvasElement | null>(null);
 const selectedColor = ref("#563d7c");
 const previousColor = ref("#563d7c");
-let pixelMap = {};
 const draw = () => {
   if (!canvas.value) return;
   const context = canvas.value.getContext("2d");
