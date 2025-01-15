@@ -33,11 +33,12 @@
       <div class="row">
         <div class="col-12 text-white p-3 d-flex justify-content-center align-items-center">
           <router-link to="/draw" class="px-2">Draw</router-link> |
-          <router-link to="/about" class="px-2">About</router-link> |
-          <router-link to="/gallery" class="px-2">Gallery</router-link> |
+          <router-link to="/warehouse" class="px-2">Warehouse</router-link> |
+          <router-link to="/gallery" class="px-2">gallery</router-link> |
           <button type="button" class="btn btn-outline-primary mx-2" @click="showModal" data-bs-target="#exampleModal"
             data-bs-whatever="@fat">Login</button>
-          <span class="mx-2 text-dark">{{ loginedUser }}</span>
+          <span class="mx-2 text-dark">{{ loginedUser }}</span> | 
+          <router-link to="/about" class="px-2">About</router-link> |
         </div>
       </div>
     </div>

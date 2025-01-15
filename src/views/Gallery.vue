@@ -24,6 +24,9 @@
                                         v-model="focusedPaintingDetail"></textarea>
                                 </div>
                             </div>
+                            <div>
+                                <el-rate v-model="ratingValue" allow-half />
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -51,6 +54,7 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
 const store = useStore();
+const ratingValue = ref();
 const paintings = ref([]);
 const focusedPainting = ref();
 const focusedPaintingName = ref();
